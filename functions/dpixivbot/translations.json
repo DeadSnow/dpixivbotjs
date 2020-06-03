@@ -150,5 +150,9 @@
     "was_sent": {
         "en": "Was sent",
         "ru": "Было отправлено"
+    },
+    "preload": {
+        "en": "Preload",
+        "ru": "Предзагрузка"
     }
 }

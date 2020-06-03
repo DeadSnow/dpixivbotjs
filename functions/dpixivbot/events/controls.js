@@ -3,18 +3,6 @@ const update = require("../utils/update")
 
 module.exports = ({ bot }) => {
 
-    const showPage = (ctx, data) => ctx.answerCbQuery(`[${data.page + 1}/${data.pageCount}]`)
-
-    bot.action('prev', (ctx) => loadData(ctx, (data) => {
-        data.page = data.page - 1 < 0 ? data.pageCount - 1 : data.page - 1
-        return update(ctx, data, true).then(showPage(ctx, data))
-    }))
-
-    bot.action('next', (ctx) => loadData(ctx, (data) => {
-        data.page = data.page + 1 >= data.pageCount ? 0 : data.page + 1
-        return update(ctx, data, true).then(showPage(ctx, data))
-    }))
-
     bot.action('show', (ctx) => loadData(ctx, (data) => {
         data.show = true
         return update(ctx, data).then(() => ctx.answerCbQuery(ctx.t('shown')))

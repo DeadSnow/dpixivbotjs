@@ -4,6 +4,7 @@ const { PIXIV_PIC_URL } = require("../config")
 module.exports = (data, ctx) => Telegraf.Extra.markup((markup) => markup.inlineKeyboard([
     [
         markup.callbackButton(ctx.t('prev'), 'prev', data.pageCount <= 1),
+        markup.callbackButton(ctx.t('preload'), 'preload', data.pageCount <= 1 || data.preload),
         markup.callbackButton(ctx.t('next'), 'next', data.pageCount <= 1)
     ],
     [

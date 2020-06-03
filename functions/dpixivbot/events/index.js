@@ -4,6 +4,7 @@ module.exports = (botctx) => {
 
     require("./pic")(botctx)
     require("./start")(botctx)
+    require("./nav")(botctx)
     require("./controls")(botctx)
     require("./similar")(botctx)
     require("./settings")(botctx)
