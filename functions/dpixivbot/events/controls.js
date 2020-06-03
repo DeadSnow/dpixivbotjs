@@ -35,5 +35,6 @@ module.exports = ({ bot }) => {
 
     bot.action('full', (ctx) => loadData(ctx, (data) => {
         return sendFull(ctx, data.id, Object.assign(data, { reply: ctx.callbackQuery.message.message_id }))
+            .then(() => ctx.answerCbQuery(ctx.t('was_sent')))
     }))
 }
