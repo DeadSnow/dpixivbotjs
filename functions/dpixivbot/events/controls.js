@@ -1,5 +1,6 @@
 const { loadData } = require("../utils/data")
 const update = require("../utils/update")
+const { sendFull } = require("../utils/send")
 
 module.exports = ({ bot }) => {
 
@@ -30,5 +31,9 @@ module.exports = ({ bot }) => {
     bot.action('back', (ctx) => loadData(ctx, (data) => {
         data.choosed = null
         return update(ctx, data).then(() => ctx.answerCbQuery(ctx.t('to_main')))
+    }))
+
+    bot.action('full', (ctx) => loadData(ctx, (data) => {
+        return sendFull(ctx, data.id, Object.assign(data, { reply: ctx.callbackQuery.message.message_id }))
     }))
 }

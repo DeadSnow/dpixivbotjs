@@ -4,7 +4,6 @@ const { PIXIV_PIC_URL } = require("../config")
 module.exports = (data, ctx) => Telegraf.Extra.markup((markup) => markup.inlineKeyboard([
     [
         markup.callbackButton(ctx.t('prev'), 'prev', data.pageCount <= 1),
-        markup.callbackButton(ctx.t('preload'), 'preload', data.pageCount <= 1 || data.preload),
         markup.callbackButton(ctx.t('next'), 'next', data.pageCount <= 1)
     ],
     [
@@ -12,6 +11,10 @@ module.exports = (data, ctx) => Telegraf.Extra.markup((markup) => markup.inlineK
         markup.callbackButton(ctx.t('download_as_file'), 'file'),
         markup.switchToChatButton(ctx.t('share'), data.page > 0 ? `${data.id}_${data.page}` : `${data.id}`),
         markup.callbackButton(ctx.t('hide'), 'hide', !data.show), markup.callbackButton('🔽', 'show', data.show)
+    ],
+    [
+        markup.callbackButton(ctx.t('preload'), 'preload', !data.show || data.choosed || data.pageCount <= 1),
+        markup.callbackButton(ctx.t('full'), 'full', !data.show || data.choosed || data.pageCount <= 1)
     ],
     [
         markup.callbackButton(ctx.t('similar_menu'), 'similar', !data.show || data.choosed),

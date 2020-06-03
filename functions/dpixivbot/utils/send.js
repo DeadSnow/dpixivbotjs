@@ -19,7 +19,18 @@ exports.sendOneToChannel = (ctx, channelId, data) => info({ id: data.id }).then(
     return ctx.telegram.sendPhoto(channelId, photo, { reply_markup })
 })
 
-const picCtx = (ctx, pic, page) => newPic({
+exports.sendFull = (ctx, id, data) => info({ id }).then((pic) => {
+    const picsCtx = (new Array(pic.pageCount)).fill().map((_, i) => picCtx(ctx, pic, i, true, true))
+    return Promise.all(splitToPacks(picsCtx, 10).map((pics) =>
+        ctx.replyWithMediaGroup(pics.map((pic, i) => ({
+            type: 'photo',
+            media: pic.photo,
+            caption: data && !data.description || i ? undefined : pic.caption,
+            parse_mode: "HTML"
+        })), { reply_to_message_id: data && data.reply })))
+})
+
+const picCtx = (ctx, pic, page, no_reply_markup, no_page) => newPic({
     ctx,
     pic,
     data: {
@@ -30,7 +41,9 @@ const picCtx = (ctx, pic, page) => newPic({
         description: ctx.session.description !== undefined ? ctx.session.description : DEFAULT_CONFIG.description,
         group: ctx.session.group !== undefined ? ctx.session.group : DEFAULT_CONFIG.group,
         count: ctx.session.count !== undefined ? ctx.session.count : DEFAULT_CONFIG.count
-    }
+    },
+    no_reply_markup,
+    no_page
 })
 
 const sendOne = (ctx, pic, page, data) => {
@@ -38,7 +51,7 @@ const sendOne = (ctx, pic, page, data) => {
     return ctx.replyWithPhoto(photo, {
         caption: data && !data.description ? undefined : caption,
         reply_markup: data && !data.description ? undefined : reply_markup,
-        reply_to_message_id: data && data.reply ? ctx.callbackQuery.message.message_id : undefined,
+        reply_to_message_id: data && data.reply,
         parse_mode: "HTML"
     })
 }
@@ -52,7 +65,7 @@ const sendPack = (ctx, pics, data) => {
         parse_mode: "HTML"
     })),
         {
-            reply_to_message_id: data && data.reply ? ctx.callbackQuery.message.message_id : undefined
+            reply_to_message_id: data && data.reply
         }).catch(() => sendPackByOne(ctx, pics, data))
 }
 

@@ -23,6 +23,8 @@ const request = (options, callback) => {
   https.request(options, callback).end();
 };
 
+const pixivError = (text, ctx) => ({ text, data: ctx })
+
 const loadPage = callback => res => {
   let data = "";
   res.on("data", chunk => (data += chunk));
@@ -35,7 +37,7 @@ const toJson = callback => res => {
   loadPage(data => callback(JSON.parse(data)))(res);
 };
 
-exports.info = ({ id }) =>
+const info = ({ id }) =>
   new Promise((resolve, reject) =>
     request(
       {
@@ -43,10 +45,14 @@ exports.info = ({ id }) =>
       },
       toJson(json => {
         if (!json.error) resolve(json.body);
-        else reject();
+        else reject(pixivError("noImage", { id }));
       })
     )
   );
+
+exports.info = info
+
+exports.fullGroupInfo = ({ ids }) => Promise.all(ids.map((id) => info({ id })))
 
 exports.similar = ({ id, session, limit }) =>
   new Promise((resolve, reject) =>
@@ -66,7 +72,7 @@ exports.similar = ({ id, session, limit }) =>
             ids: ids,
             length: ids.unshift(json.body.illusts[0].illustId)
           });
-        } else reject();
+        } else reject(pixivError("noSimilarImages", { id }));
       })
     )
   );
@@ -92,14 +98,14 @@ exports.shortGroupInfo = ({ ids, session }) =>
             pageCount: parseInt(pic.illust_page_count),
             urls: pic.url
               ? {
-                  original: pic.url.big,
-                  medium: pic.url.m,
-                  smaller: pic.url["240mw"]
-                }
+                original: pic.url.big,
+                medium: pic.url.m,
+                smaller: pic.url["240mw"]
+              }
               : undefined
           }));
           resolve(res);
-        } else reject();
+        } else reject(pixivError("pixivGroupError", { ids }));
       })
     )
   );
@@ -126,7 +132,7 @@ exports.recommender = ({ type, sample_illusts, count, session }) =>
             ids: json.recommendations,
             length: json.recommendations.length
           });
-        } else reject();
+        } else reject(pixivError("pixivRecommenderError"));
       })
     )
   );
@@ -148,7 +154,7 @@ exports.following = ({ page, session }) =>
             parseInt(pic.illustId)
           );
           resolve({ ids: ids, length: ids.length, page: parseInt(page) });
-        } else reject();
+        } else reject(pixivError("pixivFollowingError"));
       })
     )
   );

@@ -47,7 +47,7 @@ module.exports = ({ config, bot }) => {
                 return update(ctx, data).then(() =>
                     ctx.answerCbQuery(ctx.t('sending_similar')))
                     .then(() =>
-                        sendPics(ctx, ids.ids.slice(end, end + data.count), Object.assign(data, { reply: true }))
+                        sendPics(ctx, ids.ids.slice(end, end + data.count), Object.assign(data, { reply: ctx.callbackQuery.message.message_id }))
                             .catch(() =>
                                 ctx.answerCbQuery(ctx.t('error_occurred'))
                                     .catch(() =>

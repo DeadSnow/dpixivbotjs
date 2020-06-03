@@ -67,3 +67,4 @@ node_modules/
 serviceAccountKey.json
 functions/dpixivbot/config.js
 functions/.runtimeconfig.json
+functions/test.js
