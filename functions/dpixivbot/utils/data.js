@@ -23,9 +23,11 @@ const findDataUrl = (caption_entities) => {
 }
 
 exports.loadDataFromMessage = (message) => {
-    const pair = findDataUrl(message.caption_entities || message.entities)
-    if (pair) {
-        return parseData(pair.url.query.data)
+    if (message.caption_entities || message.entities) {
+        const pair = findDataUrl(message.caption_entities || message.entities)
+        if (pair) {
+            return parseData(pair.url.query.data)
+        }
     }
 }
 
