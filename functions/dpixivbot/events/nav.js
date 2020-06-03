@@ -26,7 +26,7 @@ module.exports = ({ bot }) => {
                     ctx.editMessageMedia({
                         type: "photo",
                         media: url
-                    }).catch(() => { }))).finally(() => update(ctx, data, true))
+                    }).catch(() => { }))).finally(() => setTimeout(() => update(ctx, data, true), 500))
         }
     }))
 }

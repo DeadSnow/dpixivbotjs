@@ -154,5 +154,9 @@
     "preload": {
         "en": "Preload",
         "ru": "Предзагрузка"
+    },
+    "cant_send_to_channel": {
+        "en": "Can`t send to channel. It will be removed",
+        "ru": "Не могу загрузить в канал. Он будет удален"
     }
 }
