@@ -11,10 +11,20 @@ module.exports = ({ bot, config }) => {
         return sendPic(ctx, ctx.match.groups.picId, ctx.match.groups.picPage || 0)
     })
 
+    const sendPicFromMessage = (ctx, message) => {
+        const data = loadDataFromMessage(message)
+        if (data && data.id) return sendPic(ctx, data.id, data.page || 0)
+    }
+
     bot.command('pic', (ctx) => {
         if (ctx.message.reply_to_message) {
-            const data = loadDataFromMessage(ctx.message.reply_to_message)
-            if (data && data.id) return sendPic(ctx, data.id, data.page || 0)
+            return sendPicFromMessage(ctx, ctx.message.reply_to_message)
         }
+    })
+
+    bot.on('message', (ctx, next) => {
+        const sending = sendPicFromMessage(ctx, ctx.message)
+        if (sending) return sending.then(() => ctx.deleteMessage())
+        else return next()
     })
 }
