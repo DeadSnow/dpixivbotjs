@@ -14,11 +14,10 @@
       }
     ],
     "ignore": [
-      "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "serviceAccountKey.json",
-      "config.js"
+      "**/serviceAccountKey.json",
+      "**/config.js"
     ]
   },
   "firestore": {

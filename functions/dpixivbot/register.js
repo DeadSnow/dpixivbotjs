@@ -6,6 +6,8 @@ module.exports = (bot, db) => {
 
     bot.use(firestoreSession(db.collection('sessions'), { getSessionKey: (ctx) => ctx.from && `${ctx.from.id}` }))
 
+    bot.telegram.getMe().then((botInfo) => bot.context.botInfo = botInfo)
+
     bot.use((ctx, next) => {
         ctx.t = (word) => translator(word, ctx.session.lang || "en")
         return next()
